@@ -3,7 +3,7 @@
 @section('title', 'Dashboard')
 
 @section('content')
-    <h1>Dashboard Overview</h1>
+    <h1>Dashboard Admin</h1>
 
     <div class="grid-dashboard">
         <div class="dashboard-card">

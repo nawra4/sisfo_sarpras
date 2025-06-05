@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Login | YourApp</title>
+    <title>Login | Login Sisfo</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
@@ -25,6 +25,7 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             width: 350px;
             backdrop-filter: blur(10px);
+            box-sizing: border-box;
         }
 
         h1 {
@@ -45,7 +46,7 @@
         input[type="text"],
         input[type="password"] {
             width: 100%;
-            padding: 12px 15px;
+            padding: 14px 2px;
             margin-bottom: 20px;
             border-radius: 8px;
             border: none;
@@ -53,11 +54,13 @@
             outline: none;
             transition: box-shadow 0.3s ease;
             color: #333;
+            background-color: #fff;
         }
 
-        input[type="text"]:focus,
-        input[type="password"]:focus {
+        input[type="text"]:focus-visible,
+        input[type="password"]:focus-visible {
             box-shadow: 0 0 8px #9f7aea;
+            border-color: #9f7aea;
         }
 
         button {
@@ -93,19 +96,36 @@
         <h1>Masuk ke Akunmu</h1>
 
         @if ($errors->any())
-            <div class="alert">
+            <div class="alert" role="alert">
                 {{ $errors->first() }}
             </div>
         @endif
 
-        <form method="POST" action="{{ route('auth.login') }}">
+        <form method="POST" action="{{ route('auth.login') }}" aria-live="assertive">
             @csrf
 
             <label for="username">Username</label>
-            <input id="username" type="text" name="username" value="{{ old('username') }}" required autofocus placeholder="masukkan username" />
+            <input 
+                id="username" 
+                type="text" 
+                name="username" 
+                value="{{ old('username') }}" 
+                required 
+                autofocus 
+                placeholder="Masukkan username" 
+                aria-required="true"
+                aria-describedby="usernameHelp"
+            />
 
             <label for="password">Password</label>
-            <input id="password" type="password" name="password" required placeholder="masukkan password" />
+            <input 
+                id="password" 
+                type="password" 
+                name="password" 
+                required 
+                placeholder="Masukkan password" 
+                aria-required="true"
+            />
 
             <button type="submit">Login</button>
         </form>

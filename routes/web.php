@@ -62,7 +62,6 @@ Route::middleware('auth', 'role:admin')->group(function () {
         
         Route::prefix('laporan')->name('laporan.')->group(function () {
         Route::get('/', [LaporanController::class, 'index'])->name('index');
-        Route::get('/filter', [LaporanController::class, 'filter'])->name('filter'); 
 
         Route::get('/laporan/barang', [LaporanController::class, 'barang'])->name('barang');
         Route::get('/laporan/barang/pdf', [LaporanController::class, 'barangPdf'])->name('barang.pdf');

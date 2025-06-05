@@ -371,6 +371,7 @@
         <a href="{{ route('peminjaman.index') }}" class="{{ request()->routeIs('peminjaman.*') ? 'active' : '' }}" title="Peminjaman">Peminjaman</a>
         <a href="{{ route('kategori.index') }}" class="{{ request()->routeIs('kategori.*') ? 'active' : '' }}" title="Kategori Barang">Kategori Barang</a>
         <a href="{{ route('detail-pengembalian.index') }}" class="{{ request()->routeIs('detail-pengembalian.*') ? 'active' : '' }}" title="Pengembalian">Pengembalian</a>
+        <a href="{{ route('laporan.index') }}" class="{{ request()->routeIs('laporan.*') ? 'active' : '' }}" title="Laporan">Laporan</a>
         <a href="{{ route('logout') }}" class="btn-logout" title="Logout">Logout</a>
     </nav>
 
