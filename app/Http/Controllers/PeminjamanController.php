@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\PeminjamanRes;
 use App\Models\Peminjaman;
 use App\Models\DetailPeminjaman;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -61,11 +63,19 @@ class PeminjamanController extends Controller
         return response()->json($peminjaman);
     }
 
+    public function getPeminjamanByIdUsers($id) {
+        $user = User::where('users_id', $id)->first();
+        $peminjamanByUsers = Peminjaman::where('users_id', $user->users_id)->get();
+
+        return response()->json(PeminjamanRes::collection($peminjamanByUsers));
+    }
+
     public function store(Request $request)
     {
+        $user = Auth::user();
+
         try {
             $validator = Validator::make($request->all(), [
-                'users_id' => 'required|exists:users,users_id',
                 'id_barang' => 'required|exists:barang,id_barang',
                 'jumlah' => 'required|integer|min:1',
                 'keperluan' => 'required|string',
@@ -79,9 +89,11 @@ class PeminjamanController extends Controller
                 return response()->json(['errors' => $validator->errors()], 422);
             }
 
+            
+
             // Buat Detail Peminjaman terlebih dahulu
             $detailPeminjaman = DetailPeminjaman::create([
-                'users_id' => $request->users_id,
+                'users_id' => $user->users_id,
                 'id_barang' => $request->id_barang,
                 'jumlah' => $request->jumlah,
                 'keperluan' => $request->keperluan,
@@ -95,7 +107,7 @@ class PeminjamanController extends Controller
 
             // Buat Peminjaman
             $peminjaman = Peminjaman::create([
-                'users_id' => $request->users_id,
+                'users_id' => $user->users_id,
                 'id_detail_peminjaman' => $detailPeminjaman->id_detail_peminjaman,
                 'status' => 'pending',
             ]);
