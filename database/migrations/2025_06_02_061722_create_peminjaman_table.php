@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('peminjaman', function (Blueprint $table) {
-            $table->id('id_peminjaman'); // BIGINT UNSIGNED AUTO_INCREMENT
+            $table->id('id_peminjaman');
             $table->unsignedBigInteger('users_id');
             $table->unsignedBigInteger('id_detail_peminjaman'); // Ensure this matches the type in `details_borrows`
             $table->enum('status', ['dipinjam', 'rejected', 'pending'])->default('pending');

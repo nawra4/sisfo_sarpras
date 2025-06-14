@@ -206,7 +206,7 @@
             display: inline-block;
             text-align: center;
             user-select: none;
-            margin-right: 6px;
+            /* Remove margin-right from here if you use flexbox gap in the child view */
         }
 
         .btn-primary {
@@ -258,6 +258,20 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             user-select: none;
         }
+
+        /* Alert error message (moved from previous answer, now in layout) */
+        .alert-error {
+            max-width: 600px; /* Added max-width for better appearance */
+            margin: 0 auto 20px; /* Centered with margin-bottom */
+            background: #e53e3e;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            color: white;
+            text-align:center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); /* Added shadow for consistency */
+        }
+
 
         /* Table styling */
         table {
@@ -367,18 +381,27 @@
 <body>
     <nav class="sidebar" role="navigation" aria-label="Main Navigation">
         <a href="{{ route('dashboard.index') }}" class="{{ request()->routeIs('dashboard.index') ? 'active' : '' }}" title="Dashboard">Dashboard</a>
-        <a href="{{ route('barang.index') }}" class="{{ request()->routeIs('barang.*') ? 'active' : '' }}" title="Barang">Barang</a>
-        <a href="{{ route('peminjaman.index') }}" class="{{ request()->routeIs('peminjaman.*') ? 'active' : '' }}" title="Peminjaman">Peminjaman</a>
         <a href="{{ route('kategori.index') }}" class="{{ request()->routeIs('kategori.*') ? 'active' : '' }}" title="Kategori Barang">Kategori Barang</a>
+        <a href="{{ route('barang.index') }}" class="{{ request()->routeIs('barang.*') ? 'active' : '' }}" title="Barang">Barang</a>
+        <a href="{{ route('users.index') }}" class="{{ request()->routeIs('users.*') ? 'active' : '' }}" title="Users">Users</a>
+        <a href="{{ route('peminjaman.index') }}" class="{{ request()->routeIs('peminjaman.*') ? 'active' : '' }}" title="Peminjaman">Peminjaman</a>
         <a href="{{ route('detail-pengembalian.index') }}" class="{{ request()->routeIs('detail-pengembalian.*') ? 'active' : '' }}" title="Pengembalian">Pengembalian</a>
         <a href="{{ route('laporan.index') }}" class="{{ request()->routeIs('laporan.*') ? 'active' : '' }}" title="Laporan">Laporan</a>
         <a href="{{ route('logout') }}" class="btn-logout" title="Logout">Logout</a>
     </nav>
 
     <main class="content" role="main" tabindex="-1">
+        {{-- Notifikasi Sukses --}}
         @if(session('success'))
             <div class="success-message" role="alert">
                 {{ session('success') }}
+            </div>
+        @endif
+
+        {{-- Notifikasi Error --}}
+        @if(session('error'))
+            <div class="alert-error" role="alert">
+                {{ session('error') }}
             </div>
         @endif
 

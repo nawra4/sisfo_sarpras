@@ -4,17 +4,6 @@
 
 @section('content')
     <h1>Detail Pengembalian</h1>
-
-    @if(session('success'))
-        <div class="success-message">{{ session('success') }}</div>
-    @endif
-
-    @if(session('error'))
-        <div class="alert-error" style="background: #e53e3e; padding: 14px 20px; border-radius: 12px; font-weight: 600; color: white; text-align:center; margin-bottom: 20px;">
-            {{ session('error') }}
-        </div>
-    @endif
-
     <table>
         <thead>
             <tr>
@@ -48,6 +37,7 @@
                     </td>
                     <td>
                         @if($detail->status !== 'approve')
+                        <div style="display: flex; gap:8px;">
                             <form action="{{ route('detail-pengembalian.approve', $detail->id_detail_pengembalian) }}" method="POST" style="display:inline-block;">
                                 @csrf
                                 @method('PUT')
@@ -58,6 +48,7 @@
                                 @method('PUT')
                                 <button type="submit" class="btn btn-danger">Reject</button>
                             </form>
+                            </div>
                         @else
                             <span style="font-weight:600; color: #48bb78;">Disetujui</span>
                         @endif

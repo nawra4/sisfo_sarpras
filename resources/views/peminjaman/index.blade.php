@@ -4,17 +4,6 @@
 
 @section('content')
     <h1>Daftar Peminjaman</h1>
-
-    @if(session('success'))
-        <div class="success-message">{{ session('success') }}</div>
-    @endif
-
-    @if(session('error'))
-        <div class="alert-error" style="background: #e53e3e; padding: 14px 20px; border-radius: 12px; font-weight: 600; color: white; text-align:center; margin-bottom: 20px;">
-            {{ session('error') }}
-        </div>
-    @endif
-
     <table>
         <thead>
             <tr>
@@ -35,23 +24,24 @@
                     <td>{{ $pinjam->id_peminjaman }}</td>
                     <td>{{ $pinjam->user->username ?? '-' }}</td>
                     <td>{{ $pinjam->detail->barang->nama_barang ?? '-' }}</td>
-                    <td>{{ $pinjam->detail->jumlah ?? '-' }}</td>
                     <td>{{ $pinjam->detail->keperluan ?? '-' }}</td>
                     <td style="text-transform: capitalize;">{{ $pinjam->status }}</td>
                     <td>{{ \Carbon\Carbon::parse($pinjam->detail->tanggal_pinjam)->format('d M Y') ?? '-' }}</td>
                     <td>{{ \Carbon\Carbon::parse($pinjam->detail->tanggal_kembali)->format('d M Y') ?? '-' }}</td>
                     <td>
                         @if($pinjam->status === 'pending')
-                            <form action="{{ route('peminjaman.approve', $pinjam->id_peminjaman) }}" method="POST" style="display:inline-block;">
-                                @csrf
-                                @method('PUT')
-                                <button type="submit" class="btn btn-success" style="margin-right:6px;">Approve</button>
-                            </form>
-                            <form action="{{ route('peminjaman.reject', $pinjam->id_peminjaman) }}" method="POST" style="display:inline-block;">
-                                @csrf
-                                @method('PUT')
-                                <button type="submit" class="btn btn-danger">Reject</button>
-                            </form>
+                            <div style="display: flex; gap: 8px;"> {{-- Menggunakan flexbox untuk spasi antar tombol --}}
+                                <form action="{{ route('peminjaman.approve', $pinjam->id_peminjaman) }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit" class="btn btn-success">Approve</button>
+                                </form>
+                                <form action="{{ route('peminjaman.reject', $pinjam->id_peminjaman) }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit" class="btn btn-danger">Reject</button>
+                                </form>
+                            </div>
                         @else
                             <span style="font-weight:600;">{{ ucfirst($pinjam->status) }}</span>
                         @endif
