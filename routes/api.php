@@ -8,6 +8,7 @@ use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\DetailPeminjamanController;
 use App\Http\Controllers\DetailPengembalianController;
 use App\Http\Controllers\UserController;
+use App\Models\Peminjaman;
 
 // ------------------- AUTH -------------------
 Route::post('/login', [AuthController::class, 'apiLogin']);
@@ -26,9 +27,15 @@ Route::middleware('auth:sanctum')->group(function () {
         // ---------------- MENGAJUKAN PEMINJAMAN ----------------
         Route::post('/detail-peminjaman', [DetailPeminjamanController::class, 'store']);
         Route::get('/detail-peminjaman/{id}', [DetailPeminjamanController::class, 'show'])->name('detail-peminjaman.show');
+        Route::get('/peminjaman/{id}/users', [PeminjamanController::class, 'getPeminjamanByIdUsers'])->where('id','[0-9]+');
         Route::post('/peminjaman', [PeminjamanController::class, 'store']);
         Route::get('/peminjaman/{id}', [PeminjamanController::class, 'show']);
         Route::get('/peminjaman-user', [PeminjamanController::class, 'userPeminjaman']);
+
+
+        // MENGAJUKAN PENGEMBALIAN
+        Route::get('/detail-pengembalian/{id}/users', [DetailPengembalianController::class, 'detailPengembalianByUsers'])->where('id', '[0-9]+');
+        Route::post('/detail-pengembalian', [DetailPengembalianController::class, 'store']);
     });
 });
 // ------------------- ADMIN ROLE -------------------

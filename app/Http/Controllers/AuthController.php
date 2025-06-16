@@ -21,7 +21,7 @@
                 }
 
                 // Membuat token untuk API
-                $token = $user->createToken('auth_token')->plainTextToken;
+                $token = $user->createToken('aku_cinta_TB_token')->plainTextToken;
 
                 return response()->json([
                     'message' => 'Login berhasil',

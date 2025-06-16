@@ -14,9 +14,15 @@ class DetailPengembalian extends Model
 
     protected $fillable = [
         'id_detail_peminjaman',
-        'status',
-        'tanggal_kembali',
-        'catatan',
+        'users_id',
+        'id_peminjaman',
+        'id_barang',
+        'jumlah',
+        'kondisi',
+        'soft_delete',
+        'tanggal_pengembalian',
+        'keterangan', 
+        'item_image',
     ];
 
     public function detailPeminjaman()
@@ -27,6 +33,11 @@ class DetailPengembalian extends Model
     public function peminjaman()
     {
         return $this->belongsTo(Peminjaman::class, 'id_peminjaman', 'id_peminjaman');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'users_id', 'users_id');
     }
 
     public function barang()
