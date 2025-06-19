@@ -8,12 +8,13 @@ use App\Models\DetailPengembalian;
 use App\Models\KategoriBarang;
 use App\Models\Peminjaman;
 use Illuminate\Http\Request;
-use PDF;
-use Excel;
-use App\Exports\BarangExport;
+use PDF; // Pastikan package ini sudah diinstal dan dikonfigurasi
+use Excel; // Pastikan package ini sudah diinstal dan dikonfigurasi
+use App\Exports\BarangExport; // Pastikan export classes ini sudah dibuat
 use App\Exports\PeminjamanExport;
 use App\Exports\PengembalianExport;
-use Carbon\Carbon;
+use Carbon\Carbon; // Pastikan ini diimpor
+use Illuminate\Support\Facades\Log;
 
 class LaporanController extends Controller
 {
@@ -31,7 +32,8 @@ class LaporanController extends Controller
                 'judul' => 'Peminjaman ' . optional($item->user)->name,
                 'oleh' => optional($item->user)->username ?? '-',
                 'jumlah' => $item->jumlah . ' Item',
-                'tanggal' => Carbon::parse($item->tanggal_pinjam)->translatedFormat('d M Y'),
+                // PERBAIKAN DI SINI
+                'tanggal' => optional(Carbon::parse($item->tanggal_pinjam))->translatedFormat('d M Y') ?? '-',
             ];
         });
 
@@ -40,7 +42,8 @@ class LaporanController extends Controller
                 'judul' => 'Pengembalian ' . optional(optional($item->peminjaman)->user)->name,
                 'oleh' => optional(optional($item->peminjaman)->user)->username ?? '-',
                 'jumlah' => $item->jumlah . ' Item',
-                'tanggal' => Carbon::parse($item->tanggal_kembali)->translatedFormat('d M Y'),
+                // PERBAIKAN DI SINI
+                'tanggal' => optional(Carbon::parse($item->tanggal_pengembalian))->translatedFormat('d M Y') ?? '-',
             ];
         });
 
@@ -51,7 +54,8 @@ class LaporanController extends Controller
                 'kategori' => optional($item->kategori)->nama_kategori ?? '-',
                 'jumlah' => $item->stock,
                 'kondisi' => ucfirst($item->kondisi_barang),
-                'tanggal' => $item->created_at->format('d/m/Y'),
+                // PERBAIKAN DI SINI
+                'tanggal' => optional($item->created_at)->format('d/m/Y') ?? '-',
                 'gambar' => $item->gambar_barang,
             ];
         });
@@ -66,7 +70,7 @@ class LaporanController extends Controller
 
         // Create empty peminjaman collection as default
         $peminjaman = collect();
-        
+
         // Set default values for filter parameters
         $startDate = null;
         $endDate = null;
@@ -133,7 +137,7 @@ class LaporanController extends Controller
         $pdf = PDF::loadView('laporan.pdf.peminjaman', compact('data'));
         return $pdf->download('laporan_peminjaman.pdf');
     }
-    
+
     public function peminjamanExcel(Request $request)
     {
         return Excel::download(new PeminjamanExport($request->start_date, $request->end_date), 'laporan_peminjaman.xlsx');
