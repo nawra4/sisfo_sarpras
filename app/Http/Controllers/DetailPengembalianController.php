@@ -58,7 +58,8 @@ class DetailPengembalianController extends Controller
         return response()->json($detail);
     }
 
-    public function detailPengembalianByUsers($id) {
+    public function detailPengembalianByUsers($id)
+    {
         $user = User::where('users_id', $id)->first();
         $getPengembalianByUser = DetailPengembalian::where('users_id', $user->users_id)->get();
 

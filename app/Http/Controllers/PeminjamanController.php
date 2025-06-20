@@ -21,7 +21,7 @@ class PeminjamanController extends Controller
                 ->get();
 
             Log::info('Total peminjaman found:', ['count' => $peminjaman->count()]);
-            
+
             foreach ($peminjaman as $index => $pinjam) {
                 Log::info("Peminjaman #{$index}:", [
                     'id' => $pinjam->id_peminjaman,
@@ -52,7 +52,7 @@ class PeminjamanController extends Controller
                 'file' => $e->getFile(),
                 'line' => $e->getLine()
             ]);
-            
+
             return response()->json([], 500);
         }
     }
@@ -71,78 +71,67 @@ class PeminjamanController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $user = Auth::user();
+{
+    $user = Auth::user();
 
-        try {
-            $validator = Validator::make($request->all(), [
-                'id_barang' => 'required|exists:barang,id_barang',
-                'jumlah' => 'required|integer|min:1',
-                'keperluan' => 'required|string',
-                'class' => 'required|string',
-                'tanggal_pinjam' => 'required|date',
-                'tanggal_kembali' => 'required|date|after_or_equal:tanggal_pinjam',
-            ]);
+    try {
+        $validator = Validator::make($request->all(), [
+            'id_barang' => 'required|exists:barang,id_barang',
+            'jumlah' => 'required|integer|min:1',
+            'keperluan' => 'required|string',
+            'class' => 'required|string',
+            'tanggal_pinjam' => 'required|date',
+            'tanggal_kembali' => 'required|date|after_or_equal:tanggal_pinjam',
+        ]);
 
-            if ($validator->fails()) {
-                Log::error('Validation failed:', $validator->errors()->toArray());
-                return response()->json(['errors' => $validator->errors()], 422);
-            }
-
-            
-
-            // Buat Detail Peminjaman terlebih dahulu
-            $detailPeminjaman = DetailPeminjaman::create([
-                'users_id' => $user->users_id,
-                'id_barang' => $request->id_barang,
-                'jumlah' => $request->jumlah,
-                'keperluan' => $request->keperluan,
-                'class' => $request->class,
-                'status' => 'pending',
-                'tanggal_pinjam' => $request->tanggal_pinjam,
-                'tanggal_kembali' => $request->tanggal_kembali,
-            ]);
-
-            Log::info('Detail peminjaman created:', $detailPeminjaman->toArray());
-
-            // Buat Peminjaman
-            $peminjaman = Peminjaman::create([
-                'users_id' => $user->users_id,
-                'id_detail_peminjaman' => $detailPeminjaman->id_detail_peminjaman,
-                'status' => 'pending',
-            ]);
-
-            Log::info('Peminjaman created successfully:', [
-                'id' => $peminjaman->id_peminjaman,
-                'users_id' => $peminjaman->users_id,
-                'detail_id' => $peminjaman->id_detail_peminjaman,
-                'status' => $peminjaman->status
-            ]);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Peminjaman berhasil diajukan',
-                'data' => $peminjaman->load(['user', 'detail.barang'])
-            ], 201);
-
-        } catch (\Exception $e) {
-            Log::error('Error creating peminjaman:', [
-                'message' => $e->getMessage(),
-                'request_data' => $request->all()
-            ]);
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal mengajukan peminjaman: ' . $e->getMessage()
-            ], 500);
+        if ($validator->fails()) {
+            Log::error('Validasi gagal saat peminjaman', $validator->errors()->toArray());
+            return response()->json(['errors' => $validator->errors()], 422);
         }
+
+        // Buat detail_peminjaman
+        $detailPeminjaman = DetailPeminjaman::create([
+            'users_id' => $user->users_id,
+            'id_barang' => $request->id_barang,
+            'jumlah' => $request->jumlah,
+            'keperluan' => $request->keperluan,
+            'class' => $request->class,
+            'status' => 'pending',
+            'tanggal_pinjam' => $request->tanggal_pinjam,
+            'tanggal_kembali' => $request->tanggal_kembali,
+        ]);
+
+        // Buat peminjaman
+        $peminjaman = Peminjaman::create([
+            'users_id' => $user->users_id,
+            'id_detail_peminjaman' => $detailPeminjaman->id_detail_peminjaman,
+            'status' => 'pending',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Peminjaman berhasil diajukan.',
+            'data' => $peminjaman->load(['user', 'detail.barang']),
+        ], 201);
+
+    } catch (\Exception $e) {
+        Log::error('Gagal menyimpan peminjaman:', [
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+            'request_data' => $request->all(),
+        ]);
+        return response()->json([
+            'success' => false,
+            'message' => 'Terjadi kesalahan server saat membuat peminjaman.',
+        ], 500);
     }
+}
 
     public function approve($id)
     {
         try {
         Log::info("Approve peminjaman with ID: $id");
-        
+
         $peminjaman = Peminjaman::findOrFail($id);
         $peminjaman->status = 'dipinjam';
         $peminjaman->save();
@@ -198,7 +187,7 @@ class PeminjamanController extends Controller
                 ->get();
 
             Log::info('Total peminjaman for user $userId found:', ['count' => $peminjaman->count()]);
-            
+
             foreach ($peminjaman as $index => $pinjam) {
                 Log::info("Peminjaman #{$index}:", [
                     'id' => $pinjam->id_peminjaman,
@@ -229,7 +218,7 @@ class PeminjamanController extends Controller
                 'file' => $e->getFile(),
                 'line' => $e->getLine()
             ]);
-            
+
             return response()->json([], 500);
         }
     }
